@@ -42,3 +42,6 @@ values (
   2000
 )
 on conflict (id) do nothing;
+
+insert into admins (email) values ('s202201143@ccchwc.edu.hk')
+on conflict (email) do nothing;
