@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Signature = { name: string; signedAt: string };
+type Signature = { signedAt: string };
 
 const timeFmt = new Intl.DateTimeFormat("zh-HK", {
   timeZone: "Asia/Hong_Kong",
@@ -54,8 +54,8 @@ export default function SignatureList({
         {title}
       </div>
       {rows.map((s, i) => (
-        <div className="sig-row" key={`${s.name}-${s.signedAt}-${i}`}>
-          <span className="name">{s.name}</span>
+        <div className="sig-row" key={`${s.signedAt}-${i}`}>
+          <span className="name">聯署 #{total - i}</span>
           <span className="time">{formatTime(s.signedAt)}</span>
         </div>
       ))}

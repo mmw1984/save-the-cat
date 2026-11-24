@@ -11,12 +11,13 @@ export type PetitionContent = {
   goalCount: number;
 };
 
+/** Public list is anonymous by design: DB keeps the name for admins. */
 export type Signature = {
-  name: string;
   signedAt: string;
 };
 
 export type SignatureWithEmail = Signature & {
+  name: string;
   email: string;
   kind: "school" | "public";
 };
@@ -60,15 +61,15 @@ export async function listSignatures(limit: number, offset: number): Promise<Sig
     return demoSignatures
       .filter((s) => s.kind === petitionKind())
       .slice(offset, offset + limit)
-      .map((s) => ({ name: s.name, signedAt: s.signedAt }));
+      .map((s) => ({ signedAt: s.signedAt }));
   }
   const { data } = await createAdminClient()
     .from("signatures")
-    .select("name, signed_at")
+    .select("signed_at")
     .eq("kind", petitionKind())
     .order("signed_at", { ascending: false })
     .range(offset, offset + limit - 1);
-  return (data ?? []).map((row) => ({ name: row.name, signedAt: row.signed_at }));
+  return (data ?? []).map((row) => ({ signedAt: row.signed_at }));
 }
 
 /** Idempotent: a second sign by the same email reports already-signed. */

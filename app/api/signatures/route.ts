@@ -5,7 +5,7 @@ import { getSignatureCount, listSignatures } from "@/lib/petition";
 
 const PAGE = 50;
 
-/** Public signature feed: names + sign times only, never emails. */
+/** Public signature feed: sign times only — names and emails stay server-side. */
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url);
