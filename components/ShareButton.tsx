@@ -20,14 +20,19 @@ export default function ShareButton({ title, text }: { title: string; text: stri
           return; // dismissed
         }
       }
-      // Fallback: download the card, then open the story camera so the
-      // saved image is the latest item in the gallery.
+      // Fallback: download the card, then try opening the story camera in a
+      // hidden iframe — devices without Instagram stay on the page with the
+      // downloaded image ready to post manually.
       const a = document.createElement("a");
       a.href = URL.createObjectURL(blob);
       a.download = "save-the-cat-story.png";
       a.click();
       setTimeout(() => {
-        window.location.href = "instagram://story-camera";
+        const frame = document.createElement("iframe");
+        frame.style.display = "none";
+        frame.src = "instagram://story-camera";
+        document.body.appendChild(frame);
+        setTimeout(() => frame.remove(), 2000);
       }, 800);
       setCopied(true);
       setTimeout(() => setCopied(false), 3000);
@@ -41,10 +46,12 @@ export default function ShareButton({ title, text }: { title: string; text: stri
     if (navigator.share) {
       try {
         await navigator.share({ title, text, url });
-      } catch {
-        // user dismissed the sheet — nothing to do
+        return;
+      } catch (e) {
+        // AbortError = user dismissed the sheet — nothing to do. Other
+        // errors (e.g. no share targets) fall through to clipboard copy.
+        if (e instanceof DOMException && e.name === "AbortError") return;
       }
-      return;
     }
     try {
       await navigator.clipboard.writeText(url);
