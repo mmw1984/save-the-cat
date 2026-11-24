@@ -8,7 +8,10 @@ export default function ShareButton({ title, text }: { title: string; text: stri
 
   async function shareIgStory() {
     try {
-      const blob = await (await fetch("/story-card.png")).blob();
+      const cardPath = window.location.hostname.startsWith("savethecat-public")
+        ? "/story-card-public.png"
+        : "/story-card.png";
+      const blob = await (await fetch(cardPath)).blob();
       const file = new File([blob], "save-the-cat-story.png", { type: "image/png" });
       // Web Share files: the native sheet offers Instagram and the image
       // lands straight in the story/feed composer — no Facebook App ID.
@@ -16,8 +19,10 @@ export default function ShareButton({ title, text }: { title: string; text: stri
         try {
           await navigator.share({ files: [file], title });
           return;
-        } catch {
-          return; // dismissed
+        } catch (e) {
+          // AbortError = dismissed; other failures (e.g. expired user
+          // activation after a slow fetch) fall through to the download.
+          if (e instanceof DOMException && e.name === "AbortError") return;
         }
       }
       // Fallback: download the card, then try opening the story camera in a
