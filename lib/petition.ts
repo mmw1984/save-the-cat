@@ -89,6 +89,7 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
       .from("signatures")
       .select("email")
       .eq("kind", petitionKind())
+      .order("id") // stable order — without it pages can skip/double rows
       .range(offset, offset + PAGE - 1);
     const page = data ?? [];
     const emails = [...new Set(page.map((r) => String(r.email).toLowerCase()))];
