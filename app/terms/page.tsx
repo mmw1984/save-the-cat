@@ -25,7 +25,7 @@ const sections: [string, string][] = [
   ],
   [
     "6. Intellectual Property",
-    "All content, design, and code associated with the Service are owned by Oasis, the 52nd Students' Association of the Church of Christ in China Heep Woh College. You may not copy, modify, distribute, or reverse-engineer any part of the Service.",
+    "All content, design, and code associated with the Service are owned by Marco Wong, who operates the Service in a personal capacity. You may not copy, modify, distribute, or reverse-engineer any part of the Service.",
   ],
   [
     "7. Limitation of Liability",

@@ -5,7 +5,7 @@ import CatIcon from "@/components/CatIcon";
 const sections: [string, string][] = [
   [
     "1. Who we are",
-    "This petition platform is operated by Oasis, the 52nd Students' Association of the Church of Christ in China Heep Woh College. We act as the data controller for the personal information described below.",
+    "This petition platform is operated by Marco Wong in a personal capacity, not by any students' association or school body. The operator acts as the data controller for the personal information described below.",
   ],
   [
     "2. Information we collect",
