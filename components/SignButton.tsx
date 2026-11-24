@@ -44,7 +44,10 @@ export default function SignButton({
             checked={showName}
             onChange={(e) => setShowName(e.target.checked)}
           />
-          <span>同意喺聯署名單公開我嘅名（只有已簽署嘅人先睇到）</span>
+          <span>
+            同意喺聯署名單顯示我嘅全名（例如「陳大文」，只有已簽署嘅人先睇到）；唔剔嘅話會顯示你嘅身份
+            + 編號，例如「學生 #12」
+          </span>
         </label>
       ) : (
         <div className="consent-check">

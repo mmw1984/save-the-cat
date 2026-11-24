@@ -99,6 +99,7 @@ export default async function Home() {
           total={count}
           title={S.listTitle}
           loadMoreLabel={S.loadMore}
+          roleLabels={S.roleLabels}
         />
       </main>
 

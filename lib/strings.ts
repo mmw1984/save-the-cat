@@ -12,6 +12,7 @@ export const S = {
   goal: (n: number) => `目標 ${n.toLocaleString()}`,
   listTitle: "聯署名單",
   loadMore: "載入更多",
+  roleLabels: { student: "學生", alumni: "校友", staff: "Staff" },
   adminTitle: "Admin — 簽名紀錄",
   exportCsv: "匯出 CSV",
   colName: "姓名",

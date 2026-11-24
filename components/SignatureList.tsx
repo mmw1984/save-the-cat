@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-type Signature = { name?: string; signedAt: string };
+type Signature = { name?: string; signedAt: string; role?: string };
 
 const timeFmt = new Intl.DateTimeFormat("zh-HK", {
   timeZone: "Asia/Hong_Kong",
@@ -24,11 +24,13 @@ export default function SignatureList({
   total,
   title,
   loadMoreLabel,
+  roleLabels,
 }: {
   initial: Signature[];
   total: number;
   title: string;
   loadMoreLabel: string;
+  roleLabels: Record<string, string>;
 }) {
   const [rows, setRows] = useState(initial);
   const [busy, setBusy] = useState(false);
@@ -55,7 +57,9 @@ export default function SignatureList({
       </div>
       {rows.map((s, i) => (
         <div className="sig-row" key={`${s.signedAt}-${i}`}>
-          <span className="name">{s.name ?? `聯署 #${total - i}`}</span>
+          <span className="name">
+            {s.name ?? `${roleLabels[s.role ?? "student"] ?? "聯署"} #${total - i}`}
+          </span>
           <span className="time">{formatTime(s.signedAt)}</span>
         </div>
       ))}

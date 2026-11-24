@@ -15,9 +15,13 @@ export type PetitionContent = {
  * name is present only for viewers who already signed (and for admins);
  * the anonymous public list omits it.
  */
+export type SignerRole = "student" | "alumni" | "staff";
+
 export type Signature = {
   name?: string;
   signedAt: string;
+  /** Role label for anonymous rows; 'staff' when the email is not on the roster. */
+  role?: SignerRole;
 };
 
 export type SignatureWithEmail = Signature & {
@@ -76,23 +80,50 @@ export async function listSignatures(
             ? s.name
             : undefined,
         signedAt: s.signedAt,
+        role: "student" as const,
       }));
   }
   const { data } = await createAdminClient()
     .from("signatures")
-    .select("name, signed_at, show_name")
+    .select("name, email, signed_at, show_name")
     .eq("kind", petitionKind())
     .order("signed_at", { ascending: false })
     .range(offset, offset + limit - 1);
-  return (data ?? []).map((row) => ({
+  const rows = data ?? [];
+
+  // Roles are only needed for anonymous rows on the school petition —
+  // anything not on the roster is staff. The public petition shows every
+  // name, so pairing it with a school-role label would leak status for no
+  // reason. Emails are used server-side only and never serialized.
+  const roles = new Map<string, SignerRole>();
+  const showNameOf = (row: { show_name: boolean }) =>
+    petitionKind() === "public" || (includeNames && row.show_name);
+  const emails = [
+    ...new Set(
+      rows
+        .filter((r) => !showNameOf(r))
+        .map((r) => String(r.email).toLowerCase()),
+    ),
+  ];
+  if (emails.length > 0) {
+    const { data: roster } = await createAdminClient()
+      .from("roster")
+      .select("email, role")
+      .in("email", emails);
+    for (const r of roster ?? []) {
+      roles.set(String(r.email).toLowerCase(), r.role === "alumni" ? "alumni" : "student");
+    }
+  }
+
+  return rows.map((row) => ({
     // Consent gate: on the school petition only signed viewers see names,
     // and only for consenting signers. The public petition shows every
     // name to everyone.
-    name:
-      petitionKind() === "public" || (includeNames && row.show_name)
-        ? row.name
-        : undefined,
+    name: showNameOf(row) ? row.name : undefined,
     signedAt: row.signed_at,
+    role: showNameOf(row)
+      ? undefined
+      : (roles.get(String(row.email).toLowerCase()) ?? "staff"),
   }));
 }
 
