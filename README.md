@@ -39,7 +39,9 @@ Browser ──▶ Cloudflare Workers (Next.js via @opennextjs/cloudflare)
 ### 2. Supabase (new project)
 
 1. Create a new Supabase project.
-2. **SQL Editor** → run `supabase/migrations/202611240001_petition.sql`.
+2. **SQL Editor** → run every file in `supabase/migrations/`, oldest first
+   (`202611240001_…`, `…0002_…`, `…0003_…`). Skipping `…0003_…` leaves the
+   `signatures.kind` column missing and signing fails on both Workers.
 3. Add your admin email:
    `insert into admins (email) values ('you@ccchwc.edu.hk');`
 4. Edit the petition text any time by updating the `petition_content` row.
