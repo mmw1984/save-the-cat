@@ -50,7 +50,11 @@ export default async function Home() {
       <main>
         <section className="hero">
           <h1>{content.title}</h1>
-          <div className="body">{content.body}</div>
+          <div className="body">
+            {content.body.split(/\n\s*\n/).map((para, i) => (
+              <p key={i}>{para}</p>
+            ))}
+          </div>
 
           <div className="progress">
             <div className="labels">
@@ -61,9 +65,11 @@ export default async function Home() {
               </span>
               {content.goalCount > 0 ? <span>{S.goal(content.goalCount)}</span> : null}
             </div>
-            <div className="track">
-              <div className="fill" style={{ width: `${pct}%` }} />
-            </div>
+            {content.goalCount > 0 ? (
+              <div className="track">
+                <div className="fill" style={{ width: `${pct}%` }} />
+              </div>
+            ) : null}
           </div>
 
           <div className="cta">
