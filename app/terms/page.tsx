@@ -45,7 +45,7 @@ const sections: [string, string][] = [
   ],
   [
     "11. Contact Us",
-    "If you have any questions about these Terms of Service, please contact oasisccchwc@gmail.com.",
+    "If you have any questions about these Terms of Service, please contact me@mmw1984.com.",
   ],
 ];
 
