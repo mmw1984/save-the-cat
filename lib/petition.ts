@@ -71,7 +71,10 @@ export async function listSignatures(
       .filter((s) => s.kind === petitionKind())
       .slice(offset, offset + limit)
       .map((s) => ({
-        name: includeNames && s.showName ? s.name : undefined,
+        name:
+          petitionKind() === "public" || (includeNames && s.showName)
+            ? s.name
+            : undefined,
         signedAt: s.signedAt,
       }));
   }
@@ -82,9 +85,13 @@ export async function listSignatures(
     .order("signed_at", { ascending: false })
     .range(offset, offset + limit - 1);
   return (data ?? []).map((row) => ({
-    // Consent gate: even signed-in viewers only see the names of signers
-    // who opted in via show_name.
-    name: includeNames && row.show_name ? row.name : undefined,
+    // Consent gate: on the school petition only signed viewers see names,
+    // and only for consenting signers. The public petition shows every
+    // name to everyone.
+    name:
+      petitionKind() === "public" || (includeNames && row.show_name)
+        ? row.name
+        : undefined,
     signedAt: row.signed_at,
   }));
 }
