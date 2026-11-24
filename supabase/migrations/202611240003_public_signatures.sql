@@ -16,7 +16,7 @@ create unique index if not exists signatures_email_kind_key
 -- (the original seed, the intermediate one-paragraph text, or either prior
 -- three-paragraph text) is replaced with the current copy.
 update petition_content
-set body = '兩隻貓B喺我哋校園住咗一個月，一直俾學生同老師疼錫照顧，我哋好想佢哋留低。
+set body = '兩隻貓喺我哋校園住咗一個月，一直俾學生同老師疼錫照顧，我哋好想佢哋留低。
 
 一間 Band 1 學校理應實踐基本嘅透明度，同埋建立真正嘅「生命教育」，可惜呢個決定將兩者完全拋棄。我相信動物唔係有需要先攞出嚟展示、冇需要就靜靜雞拋棄嘅道具。
 
