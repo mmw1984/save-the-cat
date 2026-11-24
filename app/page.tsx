@@ -89,7 +89,7 @@ export default async function Home() {
                 {S.signed}
               </span>
             ) : (
-              <SignButton label={S.sign} />
+              <SignButton label={S.sign} askConsent={petitionKind() === "school"} />
             )}
           </div>
         </section>
