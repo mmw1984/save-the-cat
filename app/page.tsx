@@ -5,13 +5,14 @@ import Link from "next/link";
 import CatIcon from "@/components/CatIcon";
 import GoogleSignIn from "@/components/GoogleSignIn";
 import LogoutButton from "@/components/LogoutButton";
+import ConsentToggle from "@/components/ConsentToggle";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
 import { allowedDomain, petitionKind } from "@/lib/env";
 import {
+  getMySignature,
   getPetitionContent,
   getSignatureCount,
-  hasSigned,
   listSignatures,
 } from "@/lib/petition";
 import { readSession } from "@/lib/session";
@@ -25,7 +26,8 @@ export default async function Home() {
     getPetitionContent(),
     getSignatureCount(),
   ]);
-  const signed = session ? await hasSigned(session.email) : false;
+  const mine = session ? await getMySignature(session.email) : null;
+  const signed = mine?.signed ?? false;
   // Signers see the names of consenting signers; everyone else gets the
   // anonymous numbered list.
   const signatures = await listSignatures(FIRST_PAGE, 0, signed);
@@ -82,12 +84,20 @@ export default async function Home() {
                 wrongDomain={S.wrongDomain(allowedDomain())}
               />
             ) : signed ? (
-              <span className="signed-badge">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
-                </svg>
-                {S.signed}
-              </span>
+              <>
+                <span className="signed-badge">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+                    <path d="M9 16.17 4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z" />
+                  </svg>
+                  {S.signed}
+                </span>
+                {petitionKind() === "school" && mine ? (
+                  <ConsentToggle
+                    showName={mine.showName}
+                    anonLabel={S.consentAnon}
+                  />
+                ) : null}
+              </>
             ) : (
               <SignButton label={S.sign} askConsent={petitionKind() === "school"} />
             )}

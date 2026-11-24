@@ -13,6 +13,7 @@ export const S = {
   listTitle: "聯署名單",
   loadMore: "載入更多",
   roleLabels: { student: "學生", alumni: "校友", staff: "Staff" },
+  consentAnon: "你嘅聯署而家係匿名（顯示身份 + 編號）",
   adminTitle: "Admin — 簽名紀錄",
   exportCsv: "匯出 CSV",
   colName: "姓名",

@@ -168,16 +168,49 @@ export async function signPetition(
 }
 
 export async function hasSigned(email: string): Promise<boolean> {
+  return (await getMySignature(email)).signed;
+}
+
+export async function getMySignature(
+  email: string,
+): Promise<{ signed: boolean; showName: boolean }> {
   if (!hasDb()) {
-    return demoSignatures.some((s) => s.email === email && s.kind === petitionKind());
+    const row = demoSignatures.find(
+      (s) => s.email === email && s.kind === petitionKind(),
+    );
+    return { signed: row !== undefined, showName: row?.showName ?? false };
   }
   const { data } = await createAdminClient()
     .from("signatures")
-    .select("id")
+    .select("show_name")
     .eq("email", email)
     .eq("kind", petitionKind())
     .maybeSingle();
-  return data !== null;
+  return { signed: data !== null, showName: data?.show_name ?? false };
+}
+
+/** Flips an existing signature's name-visibility consent. */
+export async function updateConsent(
+  email: string,
+  showName: boolean,
+): Promise<boolean> {
+  if (!hasDb()) {
+    const row = demoSignatures.find(
+      (s) => s.email === email && s.kind === petitionKind(),
+    );
+    if (!row) return false;
+    row.showName = showName;
+    return true;
+  }
+  const { data, error } = await createAdminClient()
+    .from("signatures")
+    .update({ show_name: showName })
+    .eq("email", email)
+    .eq("kind", petitionKind())
+    .eq("show_name", false) // one-way: named rows can never revert to anonymous
+    .select("id");
+  if (error) throw new ApiError(500, "Could not update. Try again.");
+  return (data ?? []).length > 0;
 }
 
 export async function isAdmin(email: string): Promise<boolean> {
