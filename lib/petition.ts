@@ -81,6 +81,8 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
     alumni: 0,
     staff: 0,
   };
+  // The public petition has no roster concept — skip the lookups.
+  if (petitionKind() === "public") return counts;
   const roster = new Map<string, SignerRole>();
   const PAGE = 1000;
   const CHUNK = 200; // keeps .in() URLs under the gateway's length limit
@@ -146,6 +148,7 @@ export async function listSignatures(
     .select("name, email, signed_at, show_name")
     .eq("kind", petitionKind())
     .order("signed_at", { ascending: false })
+    .order("id", { ascending: false }) // stable tie-breaker for same-second signs
     .range(offset, offset + limit - 1);
   const rows = data ?? [];
 
