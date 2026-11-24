@@ -32,6 +32,10 @@ alter table petition_content enable row level security;
 alter table signatures enable row level security;
 alter table admins enable row level security;
 
+-- Newer Supabase projects can be created without default grants; the service
+-- role bypasses RLS but still needs table privileges.
+grant all on petition_content, signatures, admins to service_role;
+
 insert into petition_content (id, title, body, goal_count)
 values (
   true,

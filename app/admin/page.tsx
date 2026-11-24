@@ -15,11 +15,18 @@ const timeFmt = new Intl.DateTimeFormat("zh-HK", {
   hour12: false,
 });
 
-export default async function AdminPage() {
+const PAGE_SIZE = 500;
+
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ page?: string }>;
+}) {
   const session = await readSession();
   if (!session || !(await isAdmin(session.email))) redirect("/");
 
-  const rows = await listSignaturesWithEmails(500, 0);
+  const page = Math.max(1, Number((await searchParams).page ?? 1) || 1);
+  const rows = await listSignaturesWithEmails(PAGE_SIZE, (page - 1) * PAGE_SIZE);
 
   return (
     <div className="container">
@@ -56,6 +63,15 @@ export default async function AdminPage() {
             ))}
           </tbody>
         </table>
+        <div className="account" style={{ marginTop: 16 }}>
+          {page > 1 && <Link href={`/admin?page=${page - 1}`}>← {S.prevPage}</Link>}
+          <span style={{ color: "var(--muted)" }}>
+            {S.page} {page}
+          </span>
+          {rows.length === PAGE_SIZE && (
+            <Link href={`/admin?page=${page + 1}`}>{S.nextPage} →</Link>
+          )}
+        </div>
       </main>
     </div>
   );

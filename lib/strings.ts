@@ -17,5 +17,8 @@ export const S = {
   colName: "姓名",
   colEmail: "電郵",
   colTime: "簽名時間",
+  prevPage: "上一頁",
+  nextPage: "下一頁",
+  page: "第",
   wrongDomain: (d: string) => `請用 @${d} 學校帳號登入`,
 } as const;
