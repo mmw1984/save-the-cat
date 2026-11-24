@@ -17,6 +17,7 @@ export const S = {
   colName: "姓名",
   colEmail: "電郵",
   colTime: "簽名時間",
+  colKind: "平台",
   prevPage: "上一頁",
   nextPage: "下一頁",
   page: "第",

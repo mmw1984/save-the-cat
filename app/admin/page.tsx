@@ -51,6 +51,7 @@ export default async function AdminPage({
               <th>{S.colName}</th>
               <th>{S.colEmail}</th>
               <th>{S.colTime}</th>
+              <th>{S.colKind}</th>
             </tr>
           </thead>
           <tbody>
@@ -59,6 +60,7 @@ export default async function AdminPage({
                 <td>{r.name}</td>
                 <td>{r.email}</td>
                 <td>{timeFmt.format(new Date(r.signedAt))}</td>
+                <td>{r.kind === "public" ? "公眾" : "學生"}</td>
               </tr>
             ))}
           </tbody>

@@ -4,7 +4,7 @@ import { createHash } from "node:crypto";
 
 import { createRemoteJWKSet, jwtVerify } from "jose";
 
-import { allowedDomain, googleClientId } from "./env";
+import { allowedDomain, googleClientId, petitionKind } from "./env";
 import { ApiError, normalizeEmail } from "./http";
 
 const GOOGLE_JWKS = createRemoteJWKSet(new URL("https://www.googleapis.com/oauth2/v3/certs"));
@@ -54,17 +54,21 @@ export async function verifyGoogleCredential(
     throw new ApiError(403, "Your Google account has no verified email address.");
   }
 
-  // `hd` is Google's signed Workspace-domain claim: it proves the account is
-  // managed by the school domain, not a consumer Google account that happens
-  // to have a matching email suffix.
-  if (payload.hd !== allowedDomain()) {
-    throw new ApiError(403, `Sign in with your @${allowedDomain()} school account.`);
+  const email = normalizeEmail(typeof payload.email === "string" ? payload.email : "");
+
+  if (petitionKind() === "school") {
+    // `hd` is Google's signed Workspace-domain claim: it proves the account
+    // is managed by the school domain, not a consumer account that happens
+    // to have a matching email suffix.
+    if (payload.hd !== allowedDomain()) {
+      throw new ApiError(403, `Sign in with your @${allowedDomain()} school account.`);
+    }
+    if (!email.endsWith(`@${allowedDomain()}`)) {
+      throw new ApiError(403, `Sign in with your @${allowedDomain()} school account.`);
+    }
   }
 
-  const email = normalizeEmail(typeof payload.email === "string" ? payload.email : "");
-  if (!email.endsWith(`@${allowedDomain()}`)) {
-    throw new ApiError(403, `Sign in with your @${allowedDomain()} school account.`);
-  }
+  if (!email) throw new ApiError(403, "Your Google account has no email address.");
 
   const name =
     typeof payload.name === "string" && payload.name.trim() ? payload.name.trim() : email.split("@")[0];

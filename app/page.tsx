@@ -7,7 +7,7 @@ import GoogleSignIn from "@/components/GoogleSignIn";
 import LogoutButton from "@/components/LogoutButton";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
-import { allowedDomain } from "@/lib/env";
+import { allowedDomain, petitionKind } from "@/lib/env";
 import {
   getPetitionContent,
   getSignatureCount,
@@ -76,7 +76,7 @@ export default async function Home() {
             {!session ? (
               <GoogleSignIn
                 clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
-                domain={allowedDomain()}
+                domain={petitionKind() === "school" ? allowedDomain() : ""}
                 wrongDomain={S.wrongDomain(allowedDomain())}
               />
             ) : signed ? (

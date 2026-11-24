@@ -115,7 +115,7 @@ export default function GoogleSignIn({
       gis.initialize({
         client_id: clientId,
         nonce: nonce.hashed,
-        hd: domain,
+        hd: domain || undefined,
         cancel_on_tap_outside: false,
         use_fedcm_for_prompt: true,
         use_fedcm_for_button: true,

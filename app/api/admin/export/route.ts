@@ -16,8 +16,10 @@ export async function GET() {
       throw new ApiError(403, "Admins only.");
     }
     const rows = await listSignaturesWithEmails(100_000, 0);
-    const lines = ["name,email,signed_at"]
-      .concat(rows.map((r) => [csvCell(r.name), csvCell(r.email), r.signedAt].join(",")))
+    const lines = ["name,email,signed_at,kind"]
+      .concat(
+        rows.map((r) => [csvCell(r.name), csvCell(r.email), r.signedAt, r.kind].join(",")),
+      )
       .join("\n");
     return new Response(lines, {
       headers: {

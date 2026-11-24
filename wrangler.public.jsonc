@@ -1,0 +1,23 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "save-the-cat-public",
+  "compatibility_date": "2025-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  // Public petition: any verified Google account may sign (PETITION_KIND
+  // switches off the Workspace-domain check and routes signatures into the
+  // "public" pool). Deployed alongside the school Worker from the same build.
+  "routes": [
+    { "pattern": "savethecat-public.mmw1984.com", "custom_domain": true }
+  ],
+  "vars": {
+    "PETITION_KIND": "public"
+  }
+}

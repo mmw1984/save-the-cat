@@ -27,3 +27,14 @@ export function supabaseUrl(): string {
 export function supabaseServiceRoleKey(): string {
   return required("SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
+
+export type PetitionKind = "school" | "public";
+
+/**
+ * Which petition pool this Worker serves. "school" enforces the Workspace
+ * domain; "public" accepts any verified Google account into a separate
+ * signature pool.
+ */
+export function petitionKind(): PetitionKind {
+  return process.env.PETITION_KIND === "public" ? "public" : "school";
+}
