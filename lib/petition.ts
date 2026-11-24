@@ -68,33 +68,46 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
     const total = demoSignatures.filter((s) => s.kind === petitionKind()).length;
     return { total, student: total, alumni: 0, staff: 0 };
   }
-  const { data } = await createAdminClient()
+  const db = createAdminClient();
+  // The exact count comes from a head query — a select response is capped
+  // at 1,000 rows, which would silently under-count a bigger petition.
+  const { count } = await db
     .from("signatures")
-    .select("email")
+    .select("id", { count: "exact", head: true })
     .eq("kind", petitionKind());
-  const rows = data ?? [];
   const counts: SignatureCounts = {
-    total: rows.length,
+    total: count ?? 0,
     student: 0,
     alumni: 0,
     staff: 0,
   };
-  const emails = [...new Set(rows.map((r) => String(r.email).toLowerCase()))];
   const roster = new Map<string, SignerRole>();
-  if (emails.length > 0) {
-    const { data: rosterRows } = await createAdminClient()
-      .from("roster")
-      .select("email, role")
-      .in("email", emails);
-    for (const r of rosterRows ?? []) {
-      roster.set(
-        String(r.email).toLowerCase(),
-        r.role === "alumni" ? "alumni" : "student",
-      );
+  const PAGE = 1000;
+  const CHUNK = 200; // keeps .in() URLs under the gateway's length limit
+  for (let offset = 0; ; offset += PAGE) {
+    const { data } = await db
+      .from("signatures")
+      .select("email")
+      .eq("kind", petitionKind())
+      .range(offset, offset + PAGE - 1);
+    const page = data ?? [];
+    const emails = [...new Set(page.map((r) => String(r.email).toLowerCase()))];
+    for (let i = 0; i < emails.length; i += CHUNK) {
+      const { data: rosterRows } = await db
+        .from("roster")
+        .select("email, role")
+        .in("email", emails.slice(i, i + CHUNK));
+      for (const r of rosterRows ?? []) {
+        roster.set(
+          String(r.email).toLowerCase(),
+          r.role === "alumni" ? "alumni" : "student",
+        );
+      }
     }
-  }
-  for (const e of emails) {
-    counts[roster.get(e) ?? "staff"] += 1;
+    for (const e of emails) {
+      counts[roster.get(e) ?? "staff"] += 1;
+    }
+    if (page.length < PAGE) break;
   }
   return counts;
 }
