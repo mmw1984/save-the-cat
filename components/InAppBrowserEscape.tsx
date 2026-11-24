@@ -1,45 +1,34 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useState } from "react";
 
-import { useInAppBrowserEscaper } from "@jhrunning/inappbrowserescaper/react";
-
-const EMOJI_PATTERN = /^[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}\u{200D}]+\s*/u;
+import { EiabEscapeDialog, useIsInAppBrowser } from "eiab/react";
 
 export default function InAppBrowserEscape({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { browserInfo, isInApp, escapeFromInApp } = useInAppBrowserEscaper();
-  const escapedRef = useRef(false);
+  const isInApp = useIsInAppBrowser();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const observer = new MutationObserver(() => {
-      const heading = document.querySelector<HTMLElement>(
-        'div[style*="z-index: 999999"] h3',
-      );
-      if (heading && EMOJI_PATTERN.test(heading.textContent ?? "")) {
-        heading.textContent = (heading.textContent ?? "").replace(
-          EMOJI_PATTERN,
-          "",
-        );
-      }
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
+    setMounted(true);
   }, []);
 
-  useEffect(() => {
-    if (!isInApp || browserInfo?.appName !== "instagram") return;
-    if (escapedRef.current) return;
-    escapedRef.current = true;
-    escapeFromInApp({
-      message:
-        "For the best signing experience, please open this page in your browser",
-      buttonText: "Open in Browser",
-    });
-  }, [isInApp, browserInfo, escapeFromInApp]);
-
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      {mounted && isInApp === true ? (
+        <EiabEscapeDialog
+          title="喺瀏覽器開啟"
+          description="為咗最佳嘅簽名體驗，請喺你嘅瀏覽器開返呢一頁。"
+          action="喺瀏覽器開啟"
+          copy="複製連結"
+          copied="已複製！"
+          dismiss="繼續用內置瀏覽器"
+        />
+      ) : null}
+    </>
+  );
 }
