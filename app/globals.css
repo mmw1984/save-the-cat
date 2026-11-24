@@ -225,6 +225,19 @@ body {
   cursor: pointer;
 }
 
+.share-row {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-ig {
+  background: linear-gradient(45deg, #f9ce34, #ee2a7b, #6228d7);
+  background-clip: padding-box;
+  border: none;
+  color: #fff;
+  font-weight: 600;
+}
+
 .btn-primary:disabled {
   opacity: 0.5;
   cursor: default;
