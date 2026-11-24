@@ -20,13 +20,15 @@ import { S } from "@/lib/strings";
 const FIRST_PAGE = 50;
 
 export default async function Home() {
-  const [session, content, count, signatures] = await Promise.all([
+  const [session, content, count] = await Promise.all([
     readSession(),
     getPetitionContent(),
     getSignatureCount(),
-    listSignatures(FIRST_PAGE, 0),
   ]);
   const signed = session ? await hasSigned(session.email) : false;
+  // Signers see the names of consenting signers; everyone else gets the
+  // anonymous numbered list.
+  const signatures = await listSignatures(FIRST_PAGE, 0, signed);
   const pct = content.goalCount > 0 ? Math.min(100, (count / content.goalCount) * 100) : 0;
 
   return (

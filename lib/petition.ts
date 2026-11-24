@@ -11,8 +11,12 @@ export type PetitionContent = {
   goalCount: number;
 };
 
-/** Public list is anonymous by design: DB keeps the name for admins. */
+/**
+ * name is present only for viewers who already signed (and for admins);
+ * the anonymous public list omits it.
+ */
 export type Signature = {
+  name?: string;
   signedAt: string;
 };
 
@@ -20,6 +24,7 @@ export type SignatureWithEmail = Signature & {
   name: string;
   email: string;
   kind: "school" | "public";
+  showName: boolean;
 };
 
 /** No Supabase env → in-memory demo mode so the UI renders without a backend. */
@@ -55,26 +60,39 @@ export async function getSignatureCount(): Promise<number> {
   return count ?? 0;
 }
 
-export async function listSignatures(limit: number, offset: number): Promise<Signature[]> {
+export async function listSignatures(
+  limit: number,
+  offset: number,
+  includeNames = false,
+): Promise<Signature[]> {
   if (!hasDb()) {
-    // Strip emails — this feeds the public, unauthenticated signature list.
+    // Strip emails — this feeds the unauthenticated signature list.
     return demoSignatures
       .filter((s) => s.kind === petitionKind())
       .slice(offset, offset + limit)
-      .map((s) => ({ signedAt: s.signedAt }));
+      .map((s) => ({
+        name: includeNames && s.showName ? s.name : undefined,
+        signedAt: s.signedAt,
+      }));
   }
   const { data } = await createAdminClient()
     .from("signatures")
-    .select("signed_at")
+    .select("name, signed_at, show_name")
     .eq("kind", petitionKind())
     .order("signed_at", { ascending: false })
     .range(offset, offset + limit - 1);
-  return (data ?? []).map((row) => ({ signedAt: row.signed_at }));
+  return (data ?? []).map((row) => ({
+    // Consent gate: even signed-in viewers only see the names of signers
+    // who opted in via show_name.
+    name: includeNames && row.show_name ? row.name : undefined,
+    signedAt: row.signed_at,
+  }));
 }
 
 /** Idempotent: a second sign by the same email reports already-signed. */
 export async function signPetition(
   session: Session,
+  showName: boolean,
 ): Promise<{ alreadySigned: boolean; count: number }> {
   if (!hasDb()) {
     const alreadySigned = demoSignatures.some(
@@ -85,6 +103,7 @@ export async function signPetition(
         email: session.email,
         name: session.name,
         kind: petitionKind(),
+        showName,
         signedAt: new Date().toISOString(),
       });
     }
@@ -97,7 +116,12 @@ export async function signPetition(
   const db = createAdminClient();
   const { error } = await db
     .from("signatures")
-    .insert({ email: session.email, name: session.name, kind: petitionKind() });
+    .insert({
+      email: session.email,
+      name: session.name,
+      kind: petitionKind(),
+      show_name: showName,
+    });
   if (error && error.code !== "23505") {
     throw new ApiError(500, "Signature could not be saved. Try again.");
   }
@@ -148,7 +172,7 @@ export async function listSignaturesWithEmails(
     const want = Math.min(PAGE, limit + remaining - out.length);
     let query = createAdminClient()
       .from("signatures")
-      .select("id, name, email, signed_at, kind")
+      .select("id, name, email, signed_at, kind, show_name")
       .order("id", { ascending: false })
       .limit(want);
     if (lastId !== null) query = query.lt("id", lastId);
@@ -161,6 +185,7 @@ export async function listSignaturesWithEmails(
         name: row.name,
         email: row.email,
         kind: row.kind === "public" ? "public" : "school",
+        showName: row.show_name === true,
         signedAt: row.signed_at,
       });
     }
