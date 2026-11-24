@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "save-the-cat",
+  "compatibility_date": "2025-11-01",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  }
+  // Secrets (set with `wrangler secret put <NAME>`):
+  //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, GOOGLE_CLIENT_ID
+  // Vars (set in .dev.vars or here under "vars"):
+  //   NEXT_PUBLIC_GOOGLE_CLIENT_ID, NEXT_PUBLIC_ALLOWED_DOMAIN
+}
