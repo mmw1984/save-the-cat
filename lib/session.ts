@@ -3,6 +3,7 @@ import "server-only";
 import { SignJWT, jwtVerify } from "jose";
 import { cookies } from "next/headers";
 
+import { isBlacklisted } from "./blacklist";
 import { sessionSecret } from "./env";
 
 export const SESSION_COOKIE = "stc_session";
@@ -35,6 +36,8 @@ export async function readSession(): Promise<Session | null> {
     const { payload } = await jwtVerify(token, key());
     const email = payload.sub;
     if (!email) return null;
+    // Blacklisting takes effect immediately, even for sessions issued earlier.
+    if (await isBlacklisted(email)) return null;
     return {
       email,
       name: typeof payload.name === "string" ? payload.name : email,
