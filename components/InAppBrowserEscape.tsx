@@ -22,7 +22,7 @@ export default function InAppBrowserEscape({
       {mounted && isInApp === true ? (
         <EiabEscapeDialog
           title="喺瀏覽器開啟"
-          description="為咗最佳嘅簽名體驗，請喺你嘅瀏覽器開返呢一頁。"
+          description="為咗最佳嘅簽名體驗，請喺你嘅瀏覽器開返呢一頁。X（Twitter）唔俾網站直接開 Safari——請撳 ••• 再揀「喺瀏覽器開啟」，或者複製連結貼去 Safari。"
           action="喺瀏覽器開啟"
           copy="複製連結"
           copied="已複製！"
