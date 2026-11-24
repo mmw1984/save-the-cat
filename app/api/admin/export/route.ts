@@ -3,7 +3,10 @@ import { isAdmin, listSignaturesWithEmails } from "@/lib/petition";
 import { readSession } from "@/lib/session";
 
 function csvCell(value: string): string {
-  return /[",\n]/.test(value) ? `"${value.replace(/"/g, '""')}"` : value;
+  // Spreadsheet-formula injection: a signer name starting with = + - @ would
+  // evaluate when an admin opens the export. Prefix it so it stays text.
+  const safe = /^[=+\-@\t\r]/.test(value) ? `'${value}` : value;
+  return /[",\n]/.test(safe) ? `"${safe.replace(/"/g, '""')}"` : safe;
 }
 
 export async function GET() {

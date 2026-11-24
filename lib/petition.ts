@@ -50,7 +50,12 @@ export async function getSignatureCount(): Promise<number> {
 }
 
 export async function listSignatures(limit: number, offset: number): Promise<Signature[]> {
-  if (!hasDb()) return demoSignatures.slice(offset, offset + limit);
+  if (!hasDb()) {
+    // Strip emails — this feeds the public, unauthenticated signature list.
+    return demoSignatures
+      .slice(offset, offset + limit)
+      .map((s) => ({ name: s.name, signedAt: s.signedAt }));
+  }
   const { data } = await createAdminClient()
     .from("signatures")
     .select("name, signed_at")
@@ -111,14 +116,25 @@ export async function listSignaturesWithEmails(
   offset: number,
 ): Promise<SignatureWithEmail[]> {
   if (!hasDb()) return demoSignatures.slice(offset, offset + limit);
-  const { data } = await createAdminClient()
-    .from("signatures")
-    .select("name, email, signed_at")
-    .order("signed_at", { ascending: false })
-    .range(offset, offset + limit - 1);
-  return (data ?? []).map((row) => ({
-    name: row.name,
-    email: row.email,
-    signedAt: row.signed_at,
-  }));
+  // PostgREST caps a response at ~1000 rows regardless of .range(): page
+  // through so the admin export never silently truncates.
+  const PAGE = 1000;
+  const out: SignatureWithEmail[] = [];
+  let at = offset;
+  while (out.length < limit) {
+    const want = Math.min(PAGE, limit - out.length);
+    const { data, error } = await createAdminClient()
+      .from("signatures")
+      .select("name, email, signed_at")
+      .order("signed_at", { ascending: false })
+      .range(at, at + want - 1);
+    if (error) throw new ApiError(500, "Signatures could not be loaded.");
+    const rows = data ?? [];
+    for (const row of rows) {
+      out.push({ name: row.name, email: row.email, signedAt: row.signed_at });
+    }
+    if (rows.length < want) break;
+    at += rows.length;
+  }
+  return out;
 }

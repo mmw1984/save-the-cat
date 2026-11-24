@@ -42,8 +42,23 @@ export async function verifyGoogleCredential(
     throw new ApiError(401, "Google sign-in could not be verified. Try again.");
   }
 
+  // A captured credential+nonce pair stays valid until the Google token
+  // expires (~1h). GIS mints the token at click time, so reject anything
+  // minted more than 10 minutes ago — that bounds the replay window.
+  const issuedAt = typeof payload.iat === "number" ? payload.iat : 0;
+  if (Date.now() / 1000 - issuedAt > 10 * 60) {
+    throw new ApiError(401, "Google sign-in could not be verified. Try again.");
+  }
+
   if (payload.email_verified !== true) {
     throw new ApiError(403, "Your Google account has no verified email address.");
+  }
+
+  // `hd` is Google's signed Workspace-domain claim: it proves the account is
+  // managed by the school domain, not a consumer Google account that happens
+  // to have a matching email suffix.
+  if (payload.hd !== allowedDomain()) {
+    throw new ApiError(403, `Sign in with your @${allowedDomain()} school account.`);
   }
 
   const email = normalizeEmail(typeof payload.email === "string" ? payload.email : "");
