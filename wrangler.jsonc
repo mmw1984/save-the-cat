@@ -18,7 +18,8 @@
   ],
   // Vars baked into the Worker at deploy time (non-secret).
   "vars": {
-    "NEXT_PUBLIC_ALLOWED_DOMAIN": "ccchwc.edu.hk"
+    "NEXT_PUBLIC_ALLOWED_DOMAIN": "ccchwc.edu.hk",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "746639886925-mn51geoi7kprfoh7hcrm0rc7qroh3jtu.apps.googleusercontent.com"
   }
   // Secrets (set with `wrangler secret put <NAME>`):
   //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, GOOGLE_CLIENT_ID
