@@ -10,9 +10,19 @@
   },
   "observability": {
     "enabled": true
+  },
+  // Custom domains on the mmw1984.com zone (managed DNS records are created
+  // automatically by wrangler on deploy).
+  "routes": [
+    { "pattern": "savethecat.mmw1984.com", "custom_domain": true },
+    { "pattern": "savethecat-api.mmw1984.com", "custom_domain": true }
+  ],
+  // Vars baked into the Worker at deploy time (non-secret).
+  "vars": {
+    "NEXT_PUBLIC_ALLOWED_DOMAIN": "ccchwc.edu.hk"
   }
   // Secrets (set with `wrangler secret put <NAME>`):
   //   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, SESSION_SECRET, GOOGLE_CLIENT_ID
   // Vars (set in .dev.vars or here under "vars"):
-  //   NEXT_PUBLIC_GOOGLE_CLIENT_ID, NEXT_PUBLIC_ALLOWED_DOMAIN
+  //   NEXT_PUBLIC_GOOGLE_CLIENT_ID
 }
