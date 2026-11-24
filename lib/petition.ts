@@ -116,25 +116,31 @@ export async function listSignaturesWithEmails(
   offset: number,
 ): Promise<SignatureWithEmail[]> {
   if (!hasDb()) return demoSignatures.slice(offset, offset + limit);
-  // PostgREST caps a response at ~1000 rows regardless of .range(): page
-  // through so the admin export never silently truncates.
+  // PostgREST caps a response at ~1000 rows regardless of .range(), so page
+  // through. Offset pagination drifts when someone signs mid-export (dupe or
+  // skipped rows); keyset on the monotonic id cursor is stable instead.
   const PAGE = 1000;
   const out: SignatureWithEmail[] = [];
-  let at = offset;
+  let lastId: number | null = null;
+  let remaining = offset;
   while (out.length < limit) {
-    const want = Math.min(PAGE, limit - out.length);
-    const { data, error } = await createAdminClient()
+    const want = Math.min(PAGE, limit + remaining - out.length);
+    let query = createAdminClient()
       .from("signatures")
-      .select("name, email, signed_at")
-      .order("signed_at", { ascending: false })
-      .range(at, at + want - 1);
+      .select("id, name, email, signed_at")
+      .order("id", { ascending: false })
+      .limit(want);
+    if (lastId !== null) query = query.lt("id", lastId);
+    const { data, error } = await query;
     if (error) throw new ApiError(500, "Signatures could not be loaded.");
-    const rows = data ?? [];
+    const rows = (data ?? []).slice(remaining);
+    remaining = Math.max(0, remaining - (data ?? []).length);
     for (const row of rows) {
       out.push({ name: row.name, email: row.email, signedAt: row.signed_at });
     }
-    if (rows.length < want) break;
-    at += rows.length;
+    const last = data?.[data.length - 1];
+    if (!last || data.length < want) break;
+    lastId = last.id;
   }
   return out;
 }
