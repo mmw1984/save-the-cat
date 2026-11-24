@@ -6,24 +6,34 @@ import { useState } from "react";
 export default function ShareButton({ title, text }: { title: string; text: string }) {
   const [copied, setCopied] = useState(false);
 
-  async function copyLink(): Promise<string> {
-    const url = window.location.origin;
-    try {
-      await navigator.clipboard.writeText(url);
-    } catch {
-      // clipboard unavailable — IG story still opens, user can type the link
-    }
-    return url;
-  }
-
   async function shareIgStory() {
-    await copyLink();
-    // instagram://story-camera opens the story composer with no Facebook
-    // App ID needed (instagram-stories://share requires one). The copied
-    // link can then be pasted in as a link sticker.
-    window.location.href = "instagram://story-camera";
-    setCopied(true);
-    setTimeout(() => setCopied(false), 3000);
+    try {
+      const blob = await (await fetch("/story-card.png")).blob();
+      const file = new File([blob], "save-the-cat-story.png", { type: "image/png" });
+      // Web Share files: the native sheet offers Instagram and the image
+      // lands straight in the story/feed composer — no Facebook App ID.
+      if (navigator.canShare?.({ files: [file] })) {
+        try {
+          await navigator.share({ files: [file], title });
+          return;
+        } catch {
+          return; // dismissed
+        }
+      }
+      // Fallback: download the card, then open the story camera so the
+      // saved image is the latest item in the gallery.
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = "save-the-cat-story.png";
+      a.click();
+      setTimeout(() => {
+        window.location.href = "instagram://story-camera";
+      }, 800);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      window.prompt("複製個 link：", window.location.origin);
+    }
   }
 
   async function share() {
