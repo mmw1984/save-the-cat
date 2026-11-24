@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+import InAppBrowserEscape from "@/components/InAppBrowserEscape";
+
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -10,7 +12,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="zh-Hant-HK">
-      <body>{children}</body>
+      <body>
+        <InAppBrowserEscape>{children}</InAppBrowserEscape>
+      </body>
     </html>
   );
 }
