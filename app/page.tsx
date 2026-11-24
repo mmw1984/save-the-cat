@@ -6,6 +6,7 @@ import CatIcon from "@/components/CatIcon";
 import GoogleSignIn from "@/components/GoogleSignIn";
 import LogoutButton from "@/components/LogoutButton";
 import ConsentToggle from "@/components/ConsentToggle";
+import ShareButton from "@/components/ShareButton";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
 import { allowedDomain, petitionKind } from "@/lib/env";
@@ -110,6 +111,7 @@ export default async function Home() {
             ) : (
               <SignButton label={S.sign} askConsent={petitionKind() === "school"} />
             )}
+            <ShareButton title={content.title} text={S.shareText} />
           </div>
         </section>
 

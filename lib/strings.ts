@@ -14,6 +14,7 @@ export const S = {
   loadMore: "載入更多",
   roleLabels: { student: "學生", alumni: "校友", staff: "Staff" },
   consentAnon: "你嘅聯署而家係匿名（顯示身份 + 編號）",
+  shareText: "兩隻貓喺我哋校園住咗一個月——簽名支持佢哋留低！",
   adminTitle: "Admin — 簽名紀錄",
   exportCsv: "匯出 CSV",
   colName: "姓名",
