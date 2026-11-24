@@ -44,8 +44,14 @@ Browser ──▶ Cloudflare Workers (Next.js via @opennextjs/cloudflare)
    `signatures.kind` column missing and signing fails on both Workers.
 3. Add your admin email:
    `insert into admins (email) values ('you@ccchwc.edu.hk');`
-4. Edit the petition text any time by updating the `petition_content` row.
-5. Copy project URL + service-role key into `.env.local` / Worker secrets.
+4. Load the student/alumni roster through the service-role API (the emails
+   are personal data and are deliberately not in git):
+   `POST $SUPABASE_URL/rest/v1/roster` with
+   `[{"email": "s202501001@ccchwc.edu.hk", "role": "student"}, ...]`
+   (roles: `student`, `alumni`). Until it is loaded every anonymous signer
+   is labelled `Staff #N`.
+5. Edit the petition text any time by updating the `petition_content` row.
+6. Copy project URL + service-role key into `.env.local` / Worker secrets.
 
 ### 3. Cloudflare Worker
 
