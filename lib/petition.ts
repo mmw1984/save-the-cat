@@ -55,6 +55,50 @@ export async function getPetitionContent(): Promise<PetitionContent> {
   return { title: data.title, body: data.body, goalCount: data.goal_count ?? 0 };
 }
 
+export type SignatureCounts = {
+  total: number;
+  student: number;
+  alumni: number;
+  staff: number;
+};
+
+/** Total + per-role breakdown for the counter line (roster lookup). */
+export async function getSignatureCounts(): Promise<SignatureCounts> {
+  if (!hasDb()) {
+    const total = demoSignatures.filter((s) => s.kind === petitionKind()).length;
+    return { total, student: total, alumni: 0, staff: 0 };
+  }
+  const { data } = await createAdminClient()
+    .from("signatures")
+    .select("email")
+    .eq("kind", petitionKind());
+  const rows = data ?? [];
+  const counts: SignatureCounts = {
+    total: rows.length,
+    student: 0,
+    alumni: 0,
+    staff: 0,
+  };
+  const emails = [...new Set(rows.map((r) => String(r.email).toLowerCase()))];
+  const roster = new Map<string, SignerRole>();
+  if (emails.length > 0) {
+    const { data: rosterRows } = await createAdminClient()
+      .from("roster")
+      .select("email, role")
+      .in("email", emails);
+    for (const r of rosterRows ?? []) {
+      roster.set(
+        String(r.email).toLowerCase(),
+        r.role === "alumni" ? "alumni" : "student",
+      );
+    }
+  }
+  for (const e of emails) {
+    counts[roster.get(e) ?? "staff"] += 1;
+  }
+  return counts;
+}
+
 export async function getSignatureCount(): Promise<number> {
   if (!hasDb()) return demoSignatures.filter((s) => s.kind === petitionKind()).length;
   const { count } = await createAdminClient()

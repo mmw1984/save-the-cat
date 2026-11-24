@@ -12,7 +12,7 @@ import { allowedDomain, petitionKind } from "@/lib/env";
 import {
   getMySignature,
   getPetitionContent,
-  getSignatureCount,
+  getSignatureCounts,
   listSignatures,
 } from "@/lib/petition";
 import { readSession } from "@/lib/session";
@@ -21,11 +21,12 @@ import { S } from "@/lib/strings";
 const FIRST_PAGE = 50;
 
 export default async function Home() {
-  const [session, content, count] = await Promise.all([
+  const [session, content, counts] = await Promise.all([
     readSession(),
     getPetitionContent(),
-    getSignatureCount(),
+    getSignatureCounts(),
   ]);
+  const count = counts.total;
   const mine = session ? await getMySignature(session.email) : null;
   const signed = mine?.signed ?? false;
   // Signers see the names of consenting signers; everyone else gets the
@@ -61,18 +62,26 @@ export default async function Home() {
           </div>
 
           <div className="progress">
-            <div className="labels">
-              <span>
-                {S.signedCountPrefix}
-                <b>{count.toLocaleString()}</b>
-                {S.signedCountSuffix}
-              </span>
-              {content.goalCount > 0 ? <span>{S.goal(content.goalCount)}</span> : null}
+            <div className="big-count">
+              <b>{count.toLocaleString()}</b>
+              <span>人聯署</span>
             </div>
-            {content.goalCount > 0 ? (
-              <div className="track">
-                <div className="fill" style={{ width: `${pct}%` }} />
+            {petitionKind() === "school" && count > 0 ? (
+              <div className="count-breakdown">
+                {counts.student > 0 ? <span>學生 {counts.student}</span> : null}
+                {counts.alumni > 0 ? <span>校友 {counts.alumni}</span> : null}
+                {counts.staff > 0 ? <span>教職員 {counts.staff}</span> : null}
               </div>
+            ) : null}
+            {content.goalCount > 0 ? (
+              <>
+                <div className="labels">
+                  <span>{S.goal(content.goalCount)}</span>
+                </div>
+                <div className="track">
+                  <div className="fill" style={{ width: `${pct}%` }} />
+                </div>
+              </>
             ) : null}
           </div>
 
