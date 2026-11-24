@@ -24,12 +24,21 @@ export default function InAppBrowserEscape({
   const escapeUrl = useEscapeUrl();
   const [copied, setCopied] = useState(false);
 
+  const [handoffFailed, setHandoffFailed] = useState(false);
+
   useEffect(() => {
     if (isInApp !== true) return;
     // Platforms that don't need a user gesture (Android webviews) escape
-    // straight away — no dialog, no choice.
+    // straight away — no dialog, no choice. If the webview silently drops
+    // the handoff, fall back to the same blocking sheet after a delay.
     if (!needsUserGesture() && escapeUrl) {
       window.location.href = escapeUrl;
+      const timer = setTimeout(() => {
+        if (document.visibilityState === "visible") {
+          setHandoffFailed(true);
+        }
+      }, 1500);
+      return () => clearTimeout(timer);
     }
   }, [isInApp, escapeUrl]);
 
@@ -48,7 +57,7 @@ export default function InAppBrowserEscape({
   return (
     <>
       {children}
-      {isInApp === true && needsUserGesture() ? (
+      {isInApp === true && (needsUserGesture() || handoffFailed) ? (
         <div className="escape-backdrop">
           <div className="escape-dialog">
             <div className="escape-title">請喺瀏覽器開啟</div>
