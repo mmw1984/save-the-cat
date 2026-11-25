@@ -77,7 +77,7 @@ export default async function Home() {
             ) : (
               <CatIcon />
             )}
-            Save the Cat
+            {oasis ? "Oasis" : "Save the Cat"}
           </div>
           {session ? (
             <div className="account">
