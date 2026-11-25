@@ -165,7 +165,7 @@ export default async function Home() {
         <div className="row">
           <span>{S.siteName}</span>
           <span>
-            {oasis ? "© 第52屆學生會 Oasis 2026" : S.copyright} · <Link href="/privacy">{S.privacyLink}</Link> ·{" "}
+            {oasis ? "© 52nd Students' Association Oasis 2026" : S.copyright} · <Link href="/privacy">{S.privacyLink}</Link> ·{" "}
             <Link href="/terms">{S.termsLink}</Link>
           </span>
         </div>
