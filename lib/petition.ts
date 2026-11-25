@@ -45,6 +45,15 @@ const FALLBACK_CONTENT: PetitionContent = {
 };
 
 export async function getPetitionContent(): Promise<PetitionContent> {
+  // Per-worker content override (e.g. the Oasis-branded deployment carries
+  // the SA's official statement) wins over the shared DB row.
+  if (process.env.PETITION_TITLE || process.env.PETITION_BODY) {
+    return {
+      title: process.env.PETITION_TITLE ?? FALLBACK_CONTENT.title,
+      body: process.env.PETITION_BODY ?? "",
+      goalCount: 0,
+    };
+  }
   if (!hasDb()) return FALLBACK_CONTENT;
   const { data } = await createAdminClient()
     .from("petition_content")

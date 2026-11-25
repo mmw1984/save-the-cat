@@ -56,6 +56,13 @@ body {
   display: block;
 }
 
+.brand-logo {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
+  display: block;
+}
+
 .account {
   display: flex;
   align-items: center;

@@ -9,7 +9,7 @@ import ConsentToggle from "@/components/ConsentToggle";
 import ShareButton from "@/components/ShareButton";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
-import { allowedDomain, petitionKind } from "@/lib/env";
+import { allowedDomain, brand, petitionKind } from "@/lib/env";
 import {
   getMySignature,
   getPetitionContent,
@@ -27,6 +27,7 @@ export default async function Home() {
     getPetitionContent(),
     getSignatureCounts(),
   ]);
+  const oasis = brand() === "oasis";
   const count = counts.total;
   const mine = session ? await getMySignature(session.email) : null;
   const signed = mine?.signed ?? false;
@@ -40,7 +41,11 @@ export default async function Home() {
       <header className="site-header">
         <div className="row">
           <div className="brand">
-            <CatIcon />
+            {oasis ? (
+              <img src="/oasis-logo.png" alt="Oasis" className="brand-logo" />
+            ) : (
+              <CatIcon />
+            )}
             Save the Cat
           </div>
           {session ? (
@@ -128,7 +133,7 @@ export default async function Home() {
         <div className="row">
           <span>{S.siteName}</span>
           <span>
-            {S.copyright} · <Link href="/privacy">{S.privacyLink}</Link> ·{" "}
+            {oasis ? "© 第52屆學生會 Oasis 2026" : S.copyright} · <Link href="/privacy">{S.privacyLink}</Link> ·{" "}
             <Link href="/terms">{S.termsLink}</Link>
           </span>
         </div>

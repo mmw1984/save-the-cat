@@ -28,6 +28,12 @@ export function supabaseServiceRoleKey(): string {
   return required("SUPABASE_SERVICE_ROLE_KEY", process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
+/** Site brand variant. "oasis" switches the logo, footer attribution and
+ *  favicon to the 52nd Students' Association Oasis identity. */
+export function brand(): string {
+  return (process.env.BRAND ?? "default").trim().toLowerCase();
+}
+
 export type PetitionKind = "school" | "public";
 
 /**
