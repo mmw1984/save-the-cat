@@ -123,9 +123,20 @@ export default async function Home() {
 
           <div className="cta">
             {petitionClosed() ? (
-              <div className="closed-note">
-                <b>網站已關閉</b>
-              </div>
+              <>
+                <div className="closed-note">
+                  <b>網站已關閉</b>
+                </div>
+                {/* Sign-in stays available while closed so admins can reach
+                    /admin to view and export the collected signatures. */}
+                {!session ? (
+                  <GoogleSignIn
+                    clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
+                    domain={petitionKind() === "school" ? allowedDomain() : ""}
+                    wrongDomain={S.wrongDomain(allowedDomain())}
+                  />
+                ) : null}
+              </>
             ) : !session ? (
               <GoogleSignIn
                 clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
