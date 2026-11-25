@@ -1,19 +1,19 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
-/** Animates a number from 0 to `value` with an ease-out cubic curve. */
+/**
+ * Renders the final value during SSR/hydration so the count is correct
+ * even without JavaScript, then rewinds to 0 on mount and animates up
+ * with an ease-out cubic curve. The one-frame rewind is invisible in
+ * practice because it happens in the same commit as hydration.
+ */
 export default function CountUp({ value }: { value: number }) {
-  const [display, setDisplay] = useState(0);
-  const started = useRef(false);
+  const [display, setDisplay] = useState(value);
 
   useEffect(() => {
-    if (started.current) return;
-    started.current = true;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setDisplay(value);
-      return;
-    }
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    setDisplay(0);
     const duration = 900;
     const t0 = performance.now();
     const tick = (now: number) => {
