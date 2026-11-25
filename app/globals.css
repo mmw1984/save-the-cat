@@ -29,10 +29,13 @@ body {
   max-width: 720px;
   margin: 0 auto;
   padding: 0 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
 }
 
 .site-header {
   border-bottom: 1px solid var(--line);
+  padding-top: env(safe-area-inset-top);
 }
 
 .site-header .row {
@@ -249,6 +252,7 @@ body {
   border-radius: 16px;
   background: #fff;
   padding: 24px;
+  padding-bottom: max(24px, env(safe-area-inset-bottom));
   text-align: center;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
 }
@@ -419,6 +423,7 @@ body {
 
 .site-footer {
   border-top: 1px solid var(--line);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 .site-footer .row {
