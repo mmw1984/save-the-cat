@@ -8,21 +8,28 @@ export const viewport: Viewport = {
 };
 
 import InAppBrowserEscape from "@/components/InAppBrowserEscape";
-import { brand } from "@/lib/env";
+import { brand, petitionClosed } from "@/lib/env";
 
 import "./globals.css";
 
 export async function generateMetadata(): Promise<Metadata> {
   const oasis = brand() === "oasis";
+  const closed = petitionClosed();
   return {
-    title: oasis ? "Statement: Campus Cat Welfare and Demand for Public Accountability — 聯署" : "Save the Cat 聯署",
+    title: closed
+      ? "網站已關閉"
+      : oasis
+        ? "Statement: Campus Cat Welfare and Demand for Public Accountability — 聯署"
+        : "Save the Cat 聯署",
     description: "聯署平台 — 簽名支持校貓留低",
     icons: [{ url: oasis ? "/oasis-logo.png" : "/favicon.png" }],
-    openGraph: {
-      title: "Save the Cat 聯署",
-      description: "兩隻貓喺我哋校園住咗一個月——簽名支持佢哋留低。",
-      type: "website",
-    },
+    openGraph: closed
+      ? { title: "網站已關閉", type: "website" }
+      : {
+          title: "Save the Cat 聯署",
+          description: "兩隻貓喺我哋校園住咗一個月——簽名支持佢哋留低。",
+          type: "website",
+        },
   };
 }
 
