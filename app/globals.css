@@ -128,6 +128,27 @@ body {
 .hero .body p {
   margin: 0 0 1em;
 }
+.body ul {
+  margin: 0 0 1em;
+  padding: 0;
+  list-style: none;
+}
+.body li {
+  position: relative;
+  padding-left: 16px;
+  margin-bottom: 0.5em;
+}
+.body li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 0.62em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--ink);
+}
+
 
 .hero .body p:last-child {
   margin-bottom: 0;
