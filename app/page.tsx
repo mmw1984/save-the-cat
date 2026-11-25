@@ -7,6 +7,7 @@ import CatIcon from "@/components/CatIcon";
 import GoogleSignIn from "@/components/GoogleSignIn";
 import LogoutButton from "@/components/LogoutButton";
 import ConsentToggle from "@/components/ConsentToggle";
+import CountUp from "@/components/CountUp";
 import ShareButton from "@/components/ShareButton";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
@@ -98,7 +99,7 @@ export default async function Home() {
 
           <div className="progress">
             <div className="big-count">
-              <b>{count.toLocaleString()}</b>
+              <CountUp value={count} />
               <span>人聯署</span>
             </div>
             {petitionKind() === "school" && count > 0 ? (
