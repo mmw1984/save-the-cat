@@ -113,26 +113,10 @@ export default function SignButton({
           <div className="popup-dialog">
             <div className="popup-title">多謝你嘅聯署！</div>
             <p className="popup-body">幫手 share 出去，等更多人睇到：</p>
-            <div className="ig-demo" aria-hidden>
-              <div className="ig-screen">
-                <img className="ig-card-img" src="/story-card-oasis.png" alt="" />
-                <div className="ig-topbar">
-                  <div className="ig-icon ig-icon-link">
-                    <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-                  </div>
-                </div>
-                <div className="ig-sticker">
-                  <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-                  <span>petition.oasishwc.qzz.io</span>
-                </div>
-                <div className="ig-cursor" />
-              </div>
-            </div>
             <ol className="popup-steps">
               <li>撳下面「即刻分享」</li>
               <li>喺分享清單揀 Instagram</li>
-              <li>張圖會直接入你嘅 story 草稿</li>
-              <li>撳上面嘅 link 制加個 sticker，貼返 petition.oasishwc.qzz.io（上面動畫示範）</li>
+              <li>張圖會直接入你嘅 story 草稿，加個 link sticker 貼返 petition.oasishwc.qzz.io 就完美</li>
             </ol>
             <div className="popup-actions">
               <button type="button" className="popup-ghost" onClick={() => window.location.reload()}>
