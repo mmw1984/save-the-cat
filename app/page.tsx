@@ -31,9 +31,9 @@ function renderBody(body: string) {
       const items = list;
       list = [];
       blocks.push(
-        <ul key={`ul-${blocks.length}`}>
+        <ul role="list" key={`ul-${blocks.length}`}>
           {items.map((item, j) => (
-            <li key={j}>{item}</li>
+            <li role="listitem" key={j}>{item}</li>
           ))}
         </ul>,
       );
