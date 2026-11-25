@@ -15,7 +15,7 @@ import "./globals.css";
 export async function generateMetadata(): Promise<Metadata> {
   const oasis = brand() === "oasis";
   return {
-    title: "Save the Cat 聯署",
+    title: oasis ? "Statement: Campus Cat Welfare and Demand for Public Accountability — 聯署" : "Save the Cat 聯署",
     description: "聯署平台 — 簽名支持校貓留低",
     icons: [{ url: oasis ? "/oasis-logo.png" : "/favicon.png" }],
     openGraph: {

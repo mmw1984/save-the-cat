@@ -58,7 +58,7 @@ export async function getPetitionContent(): Promise<PetitionContent> {
   // The Oasis-branded deployment carries the SA's official bilingual
   // statement from the bundle; the shared DB row is left untouched.
   if (brand() === "oasis") {
-    return { title: "Save the Cat", body: OASIS_STATEMENT_BODY, goalCount: 0 };
+    return { title: "Statement: Campus Cat Welfare and Demand for Public Accountability", body: OASIS_STATEMENT_BODY, goalCount: 0 };
   }
   // Per-worker content override wins over the shared DB row. Both halves
   // must be set — a lone title would otherwise erase the body entirely.
