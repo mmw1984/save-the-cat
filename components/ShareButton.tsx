@@ -2,48 +2,19 @@
 
 import { useState } from "react";
 
+import { shareStoryCard } from "@/lib/share-story";
+
 /** Share row: dedicated IG Story deep-link + generic native share/copy fallback. */
 export default function ShareButton({ title, text }: { title: string; text: string }) {
   const [copied, setCopied] = useState(false);
 
   async function shareIgStory() {
     try {
-      const host = window.location.hostname;
-      const cardPath = host.startsWith("petition.oasishwc")
-        ? "/story-card-oasis.png"
-        : host.startsWith("savethecat-public")
-          ? "/story-card-public.png"
-          : "/story-card.png";
-      const blob = await (await fetch(cardPath)).blob();
-      const file = new File([blob], "save-the-cat-story.png", { type: "image/png" });
-      // Web Share files: the native sheet offers Instagram and the image
-      // lands straight in the story/feed composer — no Facebook App ID.
-      if (navigator.canShare?.({ files: [file] })) {
-        try {
-          await navigator.share({ files: [file], title });
-          return;
-        } catch (e) {
-          // AbortError = dismissed; other failures (e.g. expired user
-          // activation after a slow fetch) fall through to the download.
-          if (e instanceof DOMException && e.name === "AbortError") return;
-        }
+      const outcome = await shareStoryCard(title);
+      if (outcome === "fallback") {
+        setCopied(true);
+        setTimeout(() => setCopied(false), 3000);
       }
-      // Fallback: download the card, then try opening the story camera in a
-      // hidden iframe — devices without Instagram stay on the page with the
-      // downloaded image ready to post manually.
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = "save-the-cat-story.png";
-      a.click();
-      setTimeout(() => {
-        const frame = document.createElement("iframe");
-        frame.style.display = "none";
-        frame.src = "instagram://story-camera";
-        document.body.appendChild(frame);
-        setTimeout(() => frame.remove(), 2000);
-      }, 800);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
     } catch {
       window.prompt("複製個 link：", window.location.origin);
     }

@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import { shareStoryCard } from "@/lib/share-story";
+
 export default function SignButton({
   label,
   askConsent,
@@ -112,13 +114,22 @@ export default function SignButton({
             <div className="popup-title">多謝你嘅聯署！</div>
             <p className="popup-body">幫手 share 出去，等更多人睇到：</p>
             <ol className="popup-steps">
-              <li>撳下面嘅「分享到 IG Story」掣</li>
+              <li>撳下面「即刻分享」</li>
               <li>喺分享清單揀 Instagram</li>
               <li>張圖會直接入你嘅 story 草稿，加個 link sticker 貼返 petition.oasishwc.qzz.io 就完美</li>
             </ol>
             <div className="popup-actions">
-              <button type="button" className="popup-primary" onClick={() => window.location.reload()}>
+              <button type="button" className="popup-ghost" onClick={() => window.location.reload()}>
                 好！
+              </button>
+              <button
+                type="button"
+                className="popup-primary"
+                onClick={() => {
+                  shareStoryCard("Save the Cat 聯署").catch(() => {});
+                }}
+              >
+                即刻分享
               </button>
             </div>
           </div>
