@@ -21,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       : oasis
         ? "Statement: Campus Cat Welfare and Demand for Public Accountability — 聯署"
         : "Save the Cat 聯署",
-    description: "聯署平台 — 簽名支持校貓留低",
+    description: closed ? "網站已關閉" : "聯署平台 — 簽名支持校貓留低",
     icons: [{ url: oasis ? "/oasis-logo.png" : "/favicon.png" }],
     openGraph: closed
       ? { title: "網站已關閉", type: "website" }
