@@ -135,7 +135,7 @@ export default async function Home() {
                   </svg>
                   {S.signed}
                 </span>
-                {petitionKind() === "school" && mine ? (
+                {petitionKind() === "school" && !oasis && mine ? (
                   <ConsentToggle
                     showName={mine.showName}
                     anonLabel={S.consentAnon}
@@ -143,19 +143,21 @@ export default async function Home() {
                 ) : null}
               </>
             ) : (
-              <SignButton label={S.sign} askConsent={petitionKind() === "school"} />
+              <SignButton label={S.sign} askConsent={petitionKind() === "school" && !oasis} />
             )}
             <ShareButton title={content.title} text={S.shareText} />
           </div>
         </section>
 
-        <SignatureList
-          initial={signatures}
-          total={count}
-          title={S.listTitle}
-          loadMoreLabel={S.loadMore}
-          roleLabels={S.roleLabels}
-        />
+        {!oasis ? (
+          <SignatureList
+            initial={signatures}
+            total={count}
+            title={S.listTitle}
+            loadMoreLabel={S.loadMore}
+            roleLabels={S.roleLabels}
+          />
+        ) : null}
       </main>
 
       <footer className="site-footer">

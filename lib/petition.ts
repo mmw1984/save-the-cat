@@ -153,6 +153,9 @@ export async function listSignatures(
   offset: number,
   includeNames = false,
 ): Promise<Signature[]> {
+  // The Oasis petition is fully anonymous by design: names never leave
+  // the server regardless of viewer or signer consent.
+  if (brand() === "oasis") includeNames = false;
   if (!hasDb()) {
     // Strip emails — this feeds the unauthenticated signature list.
     return demoSignatures
