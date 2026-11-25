@@ -1,6 +1,7 @@
 import "server-only";
 
-import { petitionKind } from "./env";
+import { brand, petitionKind } from "./env";
+import { OASIS_STATEMENT_BODY } from "./oasis-statement";
 import { ApiError } from "./http";
 import type { Session } from "./session";
 import { createAdminClient } from "./supabase";
@@ -45,8 +46,12 @@ const FALLBACK_CONTENT: PetitionContent = {
 };
 
 export async function getPetitionContent(): Promise<PetitionContent> {
-  // Per-worker content override (e.g. the Oasis-branded deployment carries
-  // the SA's official statement) wins over the shared DB row.
+  // The Oasis-branded deployment carries the SA's official bilingual
+  // statement from the bundle; the shared DB row is left untouched.
+  if (brand() === "oasis") {
+    return { title: "Save the Cat", body: OASIS_STATEMENT_BODY, goalCount: 0 };
+  }
+  // Per-worker content override wins over the shared DB row.
   if (process.env.PETITION_TITLE || process.env.PETITION_BODY) {
     return {
       title: process.env.PETITION_TITLE ?? FALLBACK_CONTENT.title,
