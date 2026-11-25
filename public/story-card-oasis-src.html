@@ -16,7 +16,7 @@
   }
   .card {
     width: 480px; height: 900px;
-    padding-top: 84px;
+    padding-top: 64px;
     position: relative;
     display: flex; flex-direction: column; align-items: center;
   }
@@ -39,7 +39,7 @@
   }
   h1 {
     margin-top: 12px;
-    font-size: 64px; font-weight: 900; line-height: 1.02;
+    font-size: 56px; font-weight: 900; line-height: 1.02;
     color: #1a1a1a; text-align: center; letter-spacing: -1px;
   }
   h1 .hl { position: relative; white-space: nowrap; }
@@ -53,12 +53,38 @@
     color: #3d3a33; text-align: center; line-height: 1.5;
   }
   .tape-block {
-    position: relative; margin-top: 34px;
+    position: relative; margin-top: 26px;
     width: 400px;
     background: #fff; border-radius: 10px;
-    padding: 46px 30px;
+    padding: 34px 26px 28px;
     box-shadow: 0 10px 24px rgba(40,35,20,.16);
     transform: rotate(-2deg);
+  }
+  .demands-title {
+    font-size: 21px; font-weight: 900; color: #1a1a1a;
+    text-align: center; letter-spacing: 3px;
+  }
+  .demands {
+    margin-top: 12px;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: d;
+  }
+  .demands li {
+    counter-increment: d;
+    font-size: 16.5px; font-weight: 700; line-height: 1.45;
+    color: #2a2a2a;
+    padding: 5px 0 5px 34px;
+    position: relative;
+  }
+  .demands li::before {
+    content: counter(d);
+    position: absolute; left: 0; top: 6px;
+    width: 24px; height: 24px;
+    background: #ffd84d; color: #1a1a1a;
+    font-size: 14px; font-weight: 900;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
   }
   .quote {
     font-size: 23px; font-weight: 800; line-height: 1.6;
@@ -95,7 +121,14 @@
     <div class="sub">兩隻貓喺我哋校園住咗一個月——<br>簽名支持佢哋留低</div>
     <div class="tape-block">
       <div class="tape"></div>
-      <div class="quote">「我哋值得一個合理嘅解釋，<br>同埋真正嘅發言權。」</div>
+      <div class="demands-title">五大訴求</div>
+      <ol class="demands">
+        <li>立即暫停送走幼貓，直至公開對話</li>
+        <li>公開醫療紀錄、照顧紀錄及經費來源</li>
+        <li>探討校內長期安置方案，學生主導管理</li>
+        <li>學生論壇直接、公開、平等對話</li>
+        <li>公開決策過程及諮詢範圍</li>
+      </ol>
     </div>
     <div class="cta">即刻聯署 →</div>
     <div class="link">petition.oasishwc.qzz.io</div>
