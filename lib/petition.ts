@@ -220,6 +220,9 @@ export async function signPetition(
   session: Session,
   showName: boolean,
 ): Promise<{ alreadySigned: boolean; count: number }> {
+  // Oasis never displays names, so consent is meaningless there — record
+  // every signature as anonymous regardless of what the client sent.
+  if (brand() === "oasis") showName = false;
   if (!hasDb()) {
     const alreadySigned = demoSignatures.some(
       (s) => s.email === session.email && s.kind === petitionKind(),

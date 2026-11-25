@@ -143,7 +143,7 @@ export default async function Home() {
                 ) : null}
               </>
             ) : (
-              <SignButton label={S.sign} askConsent={petitionKind() === "school" && !oasis} />
+              <SignButton label={S.sign} askConsent={petitionKind() === "school" && !oasis} anonymous={oasis} />
             )}
             <ShareButton title={content.title} text={S.shareText} />
           </div>

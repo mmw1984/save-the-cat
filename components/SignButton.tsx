@@ -5,9 +5,11 @@ import { useState } from "react";
 export default function SignButton({
   label,
   askConsent,
+  anonymous = false,
 }: {
   label: string;
   askConsent: boolean;
+  anonymous?: boolean;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -20,7 +22,7 @@ export default function SignButton({
       const res = await fetch("/api/sign", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ showName }),
+        body: JSON.stringify({ showName: anonymous ? false : showName }),
       });
       if (res.ok) {
         window.location.reload();
@@ -37,7 +39,11 @@ export default function SignButton({
 
   return (
     <>
-      {askConsent ? (
+      {anonymous ? (
+        <div className="consent-check">
+          <span>你嘅簽署會以匿名方式記錄，姓名唔會喺名單顯示</span>
+        </div>
+      ) : askConsent ? (
         <label className="consent-check">
           <input
             type="checkbox"
