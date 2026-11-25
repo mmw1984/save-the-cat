@@ -24,5 +24,5 @@ export default function CountUp({ value }: { value: number }) {
     requestAnimationFrame(tick);
   }, [value]);
 
-  return <b>{display.toLocaleString()}</b>;
+  return <b>{display.toLocaleString("en-US")}</b>;
 }
