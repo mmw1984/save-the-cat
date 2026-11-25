@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 540px; height: 960px; overflow: hidden; }
+  body {
+    font-family: "PingFang TC", "PingFang SC", "Noto Sans TC", "Noto Sans CJK TC", "Microsoft JhengHei", sans-serif;
+    background: #f4f1ea;
+    background-image: radial-gradient(#ddd6c6 1.3px, transparent 1.3px);
+    background-size: 26px 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .card {
+    width: 480px; height: 900px;
+    padding-top: 64px;
+    position: relative;
+    display: flex; flex-direction: column; align-items: center;
+  }
+  .logo {
+    width: 120px; height: 120px; object-fit: contain;
+    transform: rotate(-2deg);
+    filter: drop-shadow(0 6px 10px rgba(40,35,20,.18));
+  }
+  .asso {
+    margin-top: 10px; font-size: 15px; font-weight: 800;
+    letter-spacing: 1.5px; color: #fff; background: #3a7d5c;
+    padding: 5px 14px; border-radius: 999px;
+    transform: rotate(-1deg);
+  }
+  .kicker {
+    background: #1a1a1a; color: #fff;
+    font-size: 14px; font-weight: 600; letter-spacing: 2px;
+    padding: 6px 14px; border-radius: 999px;
+    transform: rotate(-1.5deg);
+  }
+  h1 {
+    margin-top: 12px;
+    font-size: 34px; font-weight: 900; line-height: 1.02;
+    color: #1a1a1a; text-align: center; letter-spacing: -0.5px;
+  }
+  h1 .hl { position: relative; white-space: nowrap; }
+  h1 .hl::after {
+    content: ""; position: absolute; left: -4px; right: -4px; bottom: 2px;
+    height: 14px; background: #ffd84d; z-index: -1;
+    transform: rotate(-0.8deg);
+  }
+  .sub {
+    margin-top: 10px; font-size: 19px; font-weight: 600;
+    color: #3d3a33; text-align: center; line-height: 1.5;
+  }
+  .tape-block {
+    position: relative; margin-top: 26px;
+    width: 400px;
+    background: #fff; border-radius: 10px;
+    padding: 34px 26px 28px;
+    box-shadow: 0 10px 24px rgba(40,35,20,.16);
+    transform: rotate(-2deg);
+  }
+  .demands-title {
+    font-size: 21px; font-weight: 900; color: #1a1a1a;
+    text-align: center; letter-spacing: 3px;
+  }
+  .demands {
+    margin-top: 12px;
+    padding-left: 0;
+    list-style: none;
+    counter-reset: d;
+  }
+  .demands li {
+    counter-increment: d;
+    font-size: 16.5px; font-weight: 700; line-height: 1.45;
+    color: #2a2a2a;
+    padding: 5px 0 5px 34px;
+    position: relative;
+  }
+  .demands li::before {
+    content: counter(d);
+    position: absolute; left: 0; top: 6px;
+    width: 24px; height: 24px;
+    background: #ffd84d; color: #1a1a1a;
+    font-size: 14px; font-weight: 900;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .quote {
+    font-size: 23px; font-weight: 800; line-height: 1.6;
+    color: #1a1a1a; text-align: center;
+  }
+  .tape {
+    position: absolute; top: -14px; left: 50%;
+    width: 110px; height: 30px;
+    transform: translateX(-50%) rotate(-3deg);
+    background: rgba(255, 216, 77, .85);
+    box-shadow: 0 2px 4px rgba(0,0,0,.08);
+  }
+  .cta {
+    margin-top: 22px;
+    background: #1a1a1a; color: #ffd84d;
+    font-size: 20px; font-weight: 800;
+    padding: 14px 30px; border-radius: 999px;
+    box-shadow: 0 6px 16px rgba(40,35,20,.22);
+  }
+  .link {
+    margin-top: 16px;
+    font-size: 17px; font-weight: 800; color: #1a1a1a;
+    background: #fff; border: 2.5px solid #1a1a1a;
+    padding: 8px 20px; border-radius: 999px;
+    transform: rotate(1deg);
+  }
+</style>
+</head>
+<body>
+  <div class="card">
+    <img class="logo" src="oasis-logo.png" alt="">
+    <div class="asso">第52屆學生會 Oasis</div>
+    <h1 class="stmt">Statement:<br>Campus Cat Welfare<br>and Demand for<br><span class="hl">Public Accountability</span></h1>
+    <div class="sub">兩隻貓喺我哋校園住咗一個月——<br>簽名支持佢哋留低</div>
+    <div class="tape-block">
+      <div class="tape"></div>
+      <ol class="demands">
+        <li>立即暫停送走幼貓，直至公開對話</li>
+        <li>公開醫療紀錄、照顧紀錄及經費來源</li>
+        <li>探討校內長期安置方案，學生主導管理</li>
+        <li>校政論壇直接、公開、平等對話</li>
+        <li>公開決策過程及諮詢範圍</li>
+      </ol>
+    </div>
+    <div class="cta">即刻聯署 →</div>
+    <div class="link">petition.oasishwc.qzz.io</div>
+  </div>
+</body>
+</html>

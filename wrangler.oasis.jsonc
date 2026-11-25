@@ -1,0 +1,29 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "save-the-cat-oasis",
+  "compatibility_date": "2025-11-01",
+  "compatibility_flags": [
+    "nodejs_compat"
+  ],
+  "main": ".open-next/worker.js",
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "observability": {
+    "enabled": true
+  },
+  "routes": [
+    {
+      "pattern": "petition.oasishwc.qzz.io",
+      "custom_domain": true
+    }
+  ],
+  "vars": {
+    "NEXT_PUBLIC_ALLOWED_DOMAIN": "ccchwc.edu.hk",
+    "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "746639886925-mn51geoi7kprfoh7hcrm0rc7qroh3jtu.apps.googleusercontent.com",
+    "BRAND": "oasis",
+    "SIGNATURES_TABLE": "signatures_oasis",
+      "PETITION_CLOSED": "true"
+  }
+}
