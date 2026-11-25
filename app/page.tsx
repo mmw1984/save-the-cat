@@ -1,3 +1,4 @@
+import type * as React from "react";
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
@@ -20,6 +21,36 @@ import { readSession } from "@/lib/session";
 import { S } from "@/lib/strings";
 
 const FIRST_PAGE = 50;
+
+function renderBody(body: string) {
+  const paras = body.split(/\n\s*\n/);
+  const blocks: React.ReactNode[] = [];
+  let list: string[] = [];
+  const flush = () => {
+    if (list.length) {
+      const items = list;
+      list = [];
+      blocks.push(
+        <ul key={`ul-${blocks.length}`}>
+          {items.map((item, j) => (
+            <li key={j}>{item}</li>
+          ))}
+        </ul>,
+      );
+    }
+  };
+  paras.forEach((para, i) => {
+    const trimmed = para.trim();
+    if (trimmed.startsWith("\u25CF")) {
+      list.push(trimmed.replace(/^\u25CF\s*/, ""));
+    } else {
+      flush();
+      blocks.push(<p key={`p-${i}`}>{para}</p>);
+    }
+  });
+  flush();
+  return blocks;
+}
 
 export default async function Home() {
   const [session, content, counts] = await Promise.all([
@@ -62,9 +93,7 @@ export default async function Home() {
         <section className="hero">
           <h1>{content.title}</h1>
           <div className="body">
-            {content.body.split(/\n\s*\n/).map((para, i) => (
-              <p key={i}>{para}</p>
-            ))}
+            {renderBody(content.body)}
           </div>
 
           <div className="progress">
