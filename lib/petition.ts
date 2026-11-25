@@ -37,6 +37,15 @@ function hasDb(): boolean {
   return Boolean(process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY);
 }
 
+/** Signatures table for this worker — the Oasis deployment signs into its
+ * own table so pools never mix. Validated because it is interpolated into
+ * PostgREST resource paths. */
+function signaturesTable(): string {
+  const name = (process.env.SIGNATURES_TABLE ?? "signatures").trim();
+  if (!/^[a-z][a-z0-9_]*$/.test(name)) throw new Error("Invalid SIGNATURES_TABLE");
+  return name;
+}
+
 const demoSignatures: SignatureWithEmail[] = [];
 
 const FALLBACK_CONTENT: PetitionContent = {
@@ -87,7 +96,7 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
   // The exact count comes from a head query — a select response is capped
   // at 1,000 rows, which would silently under-count a bigger petition.
   const { count } = await db
-    .from("signatures")
+    .from(signaturesTable())
     .select("id", { count: "exact", head: true })
     .eq("kind", petitionKind());
   const counts: SignatureCounts = {
@@ -103,7 +112,7 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
   const CHUNK = 200; // keeps .in() URLs under the gateway's length limit
   for (let offset = 0; ; offset += PAGE) {
     const { data } = await db
-      .from("signatures")
+      .from(signaturesTable())
       .select("email")
       .eq("kind", petitionKind())
       .order("id") // stable order — without it pages can skip/double rows
@@ -133,7 +142,7 @@ export async function getSignatureCounts(): Promise<SignatureCounts> {
 export async function getSignatureCount(): Promise<number> {
   if (!hasDb()) return demoSignatures.filter((s) => s.kind === petitionKind()).length;
   const { count } = await createAdminClient()
-    .from("signatures")
+    .from(signaturesTable())
     .select("id", { count: "exact", head: true })
     .eq("kind", petitionKind());
   return count ?? 0;
@@ -159,7 +168,7 @@ export async function listSignatures(
       }));
   }
   const { data } = await createAdminClient()
-    .from("signatures")
+    .from(signaturesTable())
     .select("name, email, signed_at, show_name")
     .eq("kind", petitionKind())
     .order("signed_at", { ascending: false })
@@ -229,7 +238,7 @@ export async function signPetition(
 
   const db = createAdminClient();
   const { error } = await db
-    .from("signatures")
+    .from(signaturesTable())
     .insert({
       email: session.email,
       name: session.name,
@@ -257,7 +266,7 @@ export async function getMySignature(
     return { signed: row !== undefined, showName: row?.showName ?? false };
   }
   const { data } = await createAdminClient()
-    .from("signatures")
+    .from(signaturesTable())
     .select("show_name")
     .eq("email", email)
     .eq("kind", petitionKind())
@@ -279,7 +288,7 @@ export async function updateConsent(
     return true;
   }
   const { data, error } = await createAdminClient()
-    .from("signatures")
+    .from(signaturesTable())
     .update({ show_name: showName })
     .eq("email", email)
     .eq("kind", petitionKind())
@@ -318,7 +327,7 @@ export async function listSignaturesWithEmails(
   while (out.length < limit) {
     const want = Math.min(PAGE, limit + remaining - out.length);
     let query = createAdminClient()
-      .from("signatures")
+      .from(signaturesTable())
       .select("id, name, email, signed_at, kind, show_name")
       .order("id", { ascending: false })
       .limit(want);
