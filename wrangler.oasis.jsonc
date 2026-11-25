@@ -23,6 +23,7 @@
     "NEXT_PUBLIC_ALLOWED_DOMAIN": "ccchwc.edu.hk",
     "NEXT_PUBLIC_GOOGLE_CLIENT_ID": "746639886925-mn51geoi7kprfoh7hcrm0rc7qroh3jtu.apps.googleusercontent.com",
     "BRAND": "oasis",
-    "SIGNATURES_TABLE": "signatures_oasis"
+    "SIGNATURES_TABLE": "signatures_oasis",
+      "PETITION_CLOSED": "true"
   }
 }

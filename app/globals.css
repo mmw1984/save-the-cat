@@ -611,3 +611,22 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+.closed-note {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 14px 20px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fafafa;
+  text-align: center;
+}
+.closed-note b {
+  font-size: 16px;
+}
+.closed-note span {
+  font-size: 13px;
+  color: var(--muted);
+}

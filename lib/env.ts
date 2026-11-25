@@ -44,3 +44,9 @@ export type PetitionKind = "school" | "public";
 export function petitionKind(): PetitionKind {
   return process.env.PETITION_KIND === "public" ? "public" : "school";
 }
+
+/** When "true", signing is disabled on this Worker — the count and content
+ *  stay visible but the sign API rejects new signatures. */
+export function petitionClosed(): boolean {
+  return (process.env.PETITION_CLOSED ?? "").trim().toLowerCase() === "true";
+}

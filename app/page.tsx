@@ -11,7 +11,7 @@ import CountUp from "@/components/CountUp";
 import ShareButton from "@/components/ShareButton";
 import SignButton from "@/components/SignButton";
 import SignatureList from "@/components/SignatureList";
-import { allowedDomain, brand, petitionKind } from "@/lib/env";
+import { allowedDomain, brand, petitionClosed, petitionKind } from "@/lib/env";
 import {
   getMySignature,
   getPetitionContent,
@@ -122,7 +122,12 @@ export default async function Home() {
           </div>
 
           <div className="cta">
-            {!session ? (
+            {petitionClosed() ? (
+              <div className="closed-note">
+                <b>聯署已截止</b>
+                <span>多謝支持——我哋已經停止收集簽名。This petition is now closed.</span>
+              </div>
+            ) : !session ? (
               <GoogleSignIn
                 clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
                 domain={petitionKind() === "school" ? allowedDomain() : ""}
