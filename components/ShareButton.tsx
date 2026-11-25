@@ -8,9 +8,12 @@ export default function ShareButton({ title, text }: { title: string; text: stri
 
   async function shareIgStory() {
     try {
-      const cardPath = window.location.hostname.startsWith("savethecat-public")
-        ? "/story-card-public.png"
-        : "/story-card.png";
+      const host = window.location.hostname;
+      const cardPath = host.startsWith("petition.oasishwc")
+        ? "/story-card-oasis.png"
+        : host.startsWith("savethecat-public")
+          ? "/story-card-public.png"
+          : "/story-card.png";
       const blob = await (await fetch(cardPath)).blob();
       const file = new File([blob], "save-the-cat-story.png", { type: "image/png" });
       // Web Share files: the native sheet offers Instagram and the image

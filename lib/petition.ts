@@ -51,11 +51,12 @@ export async function getPetitionContent(): Promise<PetitionContent> {
   if (brand() === "oasis") {
     return { title: "Save the Cat", body: OASIS_STATEMENT_BODY, goalCount: 0 };
   }
-  // Per-worker content override wins over the shared DB row.
-  if (process.env.PETITION_TITLE || process.env.PETITION_BODY) {
+  // Per-worker content override wins over the shared DB row. Both halves
+  // must be set — a lone title would otherwise erase the body entirely.
+  if (process.env.PETITION_TITLE && process.env.PETITION_BODY) {
     return {
-      title: process.env.PETITION_TITLE ?? FALLBACK_CONTENT.title,
-      body: process.env.PETITION_BODY ?? "",
+      title: process.env.PETITION_TITLE,
+      body: process.env.PETITION_BODY,
       goalCount: 0,
     };
   }
