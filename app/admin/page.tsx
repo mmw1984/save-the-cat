@@ -4,6 +4,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 
 import CatIcon from "@/components/CatIcon";
+import GoogleSignIn from "@/components/GoogleSignIn";
+import { allowedDomain, petitionKind } from "@/lib/env";
 import { isAdmin, listSignaturesWithEmails } from "@/lib/petition";
 import { readSession } from "@/lib/session";
 import { S } from "@/lib/strings";
@@ -23,7 +25,21 @@ export default async function AdminPage({
   searchParams: Promise<{ page?: string }>;
 }) {
   const session = await readSession();
-  if (!session || !(await isAdmin(session.email))) redirect("/");
+  if (!session) {
+    return (
+      <div className="container">
+        <main className="closed-page">
+          <div className="closed-big">Admin 登入</div>
+          <GoogleSignIn
+            clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
+            domain={petitionKind() === "school" ? allowedDomain() : ""}
+            wrongDomain={S.wrongDomain(allowedDomain())}
+          />
+        </main>
+      </div>
+    );
+  }
+  if (!(await isAdmin(session.email))) redirect("/");
 
   const page = Math.max(1, Number((await searchParams).page ?? 1) || 1);
   const rows = await listSignaturesWithEmails(PAGE_SIZE, (page - 1) * PAGE_SIZE);

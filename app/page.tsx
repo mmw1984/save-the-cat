@@ -68,6 +68,21 @@ export default async function Home() {
   const signatures = await listSignatures(FIRST_PAGE, 0, signed);
   const pct = content.goalCount > 0 ? Math.min(100, (count / content.goalCount) * 100) : 0;
 
+  if (petitionClosed()) {
+    return (
+      <div className="container">
+        <main className="closed-page">
+          {oasis ? (
+            <img src="/oasis-logo.png" alt="Oasis" className="closed-logo" />
+          ) : (
+            <CatIcon />
+          )}
+          <div className="closed-big">網站已關閉</div>
+        </main>
+      </div>
+    );
+  }
+
   return (
     <div className="container">
       <header className="site-header">
@@ -122,22 +137,7 @@ export default async function Home() {
           </div>
 
           <div className="cta">
-            {petitionClosed() ? (
-              <>
-                <div className="closed-note">
-                  <b>網站已關閉</b>
-                </div>
-                {/* Sign-in stays available while closed so admins can reach
-                    /admin to view and export the collected signatures. */}
-                {!session ? (
-                  <GoogleSignIn
-                    clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
-                    domain={petitionKind() === "school" ? allowedDomain() : ""}
-                    wrongDomain={S.wrongDomain(allowedDomain())}
-                  />
-                ) : null}
-              </>
-            ) : !session ? (
+            {!session ? (
               <GoogleSignIn
                 clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ?? ""}
                 domain={petitionKind() === "school" ? allowedDomain() : ""}

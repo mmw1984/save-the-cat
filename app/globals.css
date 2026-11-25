@@ -630,3 +630,22 @@ body {
   font-size: 13px;
   color: var(--muted);
 }
+
+.closed-page {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 40px 0;
+}
+.closed-logo {
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+}
+.closed-big {
+  font-size: 22px;
+  font-weight: 800;
+}
