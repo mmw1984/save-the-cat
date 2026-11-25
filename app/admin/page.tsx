@@ -1,10 +1,10 @@
 export const dynamic = "force-dynamic";
 
 import Link from "next/link";
-import { redirect } from "next/navigation";
 
 import CatIcon from "@/components/CatIcon";
 import GoogleSignIn from "@/components/GoogleSignIn";
+import LogoutButton from "@/components/LogoutButton";
 import { allowedDomain, petitionKind } from "@/lib/env";
 import { isAdmin, listSignaturesWithEmails } from "@/lib/petition";
 import { readSession } from "@/lib/session";
@@ -39,7 +39,20 @@ export default async function AdminPage({
       </div>
     );
   }
-  if (!(await isAdmin(session.email))) redirect("/");
+  if (!(await isAdmin(session.email))) {
+    // No redirect: the homepage may be a bare closed page with no way to
+    // sign out, which would trap an admin who picked the wrong Google
+    // account. Offer sign-out here so they can switch accounts.
+    return (
+      <div className="container">
+        <main className="closed-page">
+          <div className="closed-big">呢個帳號冇 admin 權限</div>
+          <span style={{ color: "#999", fontSize: 13 }}>{session.email}</span>
+          <LogoutButton label={S.signOut} />
+        </main>
+      </div>
+    );
+  }
 
   const page = Math.max(1, Number((await searchParams).page ?? 1) || 1);
   const rows = await listSignaturesWithEmails(PAGE_SIZE, (page - 1) * PAGE_SIZE);
