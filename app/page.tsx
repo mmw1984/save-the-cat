@@ -124,8 +124,7 @@ export default async function Home() {
           <div className="cta">
             {petitionClosed() ? (
               <div className="closed-note">
-                <b>聯署已截止</b>
-                <span>多謝支持——我哋已經停止收集簽名。This petition is now closed.</span>
+                <b>網站已關閉</b>
               </div>
             ) : !session ? (
               <GoogleSignIn
